@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Pathwise - Student Information System{% endblock %}</title>
+    <style>
+        /* Pathwise Color Palette */
+        :root {
+            --navy-blue: #1a237e; /* Primary: Navy Blue (Lacivert) */
+            --navy-blue-light: #283593;
+            --navy-blue-dark: #0d47a1;
+            --grey: #757575; /* Secondary: Grey (Gri) */
+            --grey-light: #bdbdbd;
+            --grey-dark: #424242;
+            --beige: #f5f5dc; /* Accent: Beige */
+            --beige-light: #fafafa;
+            --white: #ffffff; /* Background: White */
+            --shadow: rgba(0, 0, 0, 0.1);
+            --shadow-hover: rgba(0, 0, 0, 0.15);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background-color: var(--beige-light);
+            color: var(--grey-dark);
+            line-height: 1.6;
+        }
+
+        /* Pathwise Branding - Navbar */
+        .navbar {
+            background: linear-gradient(135deg, var(--navy-blue) 0%, var(--navy-blue-light) 100%);
+            color: var(--white);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 6px var(--shadow);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .navbar-brand {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--white);
+            text-decoration: none;
+            letter-spacing: 0.5px;
+            transition: transform 0.3s ease, opacity 0.3s ease;
+        }
+
+            .navbar-brand:hover {
+                transform: scale(1.05);
+                opacity: 0.9;
+            }
+
+        .navbar-left {
+            display: flex;
+            gap: 1.5rem;
+            align-items: center;
+        }
+
+        .navbar a:not(.navbar-brand) {
+            color: var(--white);
+            text-decoration: none;
+            padding: 0.6rem 1.2rem;
+            border-radius: 6px;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            position: relative;
+        }
+
+            .navbar a:not(.navbar-brand):hover {
+                background-color: rgba(255, 255, 255, 0.15);
+                transform: translateY(-2px);
+                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+            }
+
+            .navbar a:not(.navbar-brand):active {
+                transform: translateY(0);
+            }
+
+        .navbar-right {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .profile-link {
+            color: var(--white);
+            text-decoration: none;
+            padding: 0.6rem 1.2rem;
+            border-radius: 6px;
+            transition: all 0.3s ease;
+        }
+
+            .profile-link:hover {
+                background-color: rgba(255, 255, 255, 0.15);
+            }
+
+        .logout-btn {
+            background-color: #e74c3c;
+            color: var(--white);
+            border: none;
+            padding: 0.6rem 1.2rem;
+            border-radius: 6px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 4px rgba(231, 76, 60, 0.3);
+        }
+
+            .logout-btn:hover {
+                background-color: #c0392b;
+                transform: translateY(-2px);
+                box-shadow: 0 4px 8px rgba(231, 76, 60, 0.4);
+            }
+
+            .logout-btn:active {
+                transform: translateY(0);
+            }
+
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+        }
+
+        .content {
+            background: var(--white);
+            padding: 2.5rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px var(--shadow);
+            transition: box-shadow 0.3s ease;
+        }
+
+            .content:hover {
+                box-shadow: 0 6px 16px var(--shadow-hover);
+            }
+
+        h1 {
+            margin-bottom: 1.5rem;
+            color: var(--navy-blue);
+            font-size: 2rem;
+            font-weight: 700;
+            border-bottom: 3px solid var(--beige);
+            padding-bottom: 0.5rem;
+        }
+
+        h2 {
+            margin-bottom: 1.2rem;
+            color: var(--navy-blue-dark);
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+
+        h3 {
+            margin-bottom: 1rem;
+            color: var(--navy-blue);
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+
+        .messages {
+            margin-bottom: 1.5rem;
+        }
+
+        .message {
+            padding: 1rem 1.5rem;
+            border-radius: 8px;
+            margin-bottom: 0.75rem;
+            box-shadow: 0 2px 4px var(--shadow);
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .message.success {
+            background-color: #d4edda;
+            color: #155724;
+            border-left: 4px solid #27ae60;
+        }
+
+        .message.error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border-left: 4px solid #e74c3c;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 0.7rem 1.5rem;
+            background: linear-gradient(135deg, var(--navy-blue) 0%, var(--navy-blue-light) 100%);
+            color: var(--white);
+            text-decoration: none;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            box-shadow: 0 2px 6px rgba(26, 35, 126, 0.3);
+        }
+
+            .btn:hover {
+                background: linear-gradient(135deg, var(--navy-blue-light) 0%, var(--navy-blue-dark) 100%);
+                transform: translateY(-2px);
+                box-shadow: 0 4px 12px rgba(26, 35, 126, 0.4);
+            }
+
+            .btn:active {
+                transform: translateY(0);
+            }
+
+            .btn:focus {
+                outline: 2px solid var(--navy-blue);
+                outline-offset: 2px;
+            }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+            box-shadow: 0 2px 6px rgba(231, 76, 60, 0.3);
+        }
+
+            .btn-danger:hover {
+                background: linear-gradient(135deg, #c0392b 0%, #a93226 100%);
+                box-shadow: 0 4px 12px rgba(231, 76, 60, 0.4);
+            }
+
+        .btn-success {
+            background: linear-gradient(135deg, #27ae60 0%, #229954 100%);
+            box-shadow: 0 2px 6px rgba(39, 174, 96, 0.3);
+        }
+
+            .btn-success:hover {
+                background: linear-gradient(135deg, #229954 0%, #1e8449 100%);
+                box-shadow: 0 4px 12px rgba(39, 174, 96, 0.4);
+            }
+
+        /* Enhanced Table Styling */
+        table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            margin-top: 1.5rem;
+            background: var(--white);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px var(--shadow);
+        }
+
+            table thead {
+                background: linear-gradient(135deg, var(--navy-blue) 0%, var(--navy-blue-light) 100%);
+                color: var(--white);
+            }
+
+            table th {
+                padding: 1rem 1.2rem;
+                text-align: left;
+                font-weight: 600;
+                font-size: 0.95rem;
+                letter-spacing: 0.3px;
+                text-transform: uppercase;
+                border: none;
+            }
+
+            table tbody tr {
+                transition: all 0.3s ease;
+                border-bottom: 1px solid #e0e0e0;
+            }
+
+                table tbody tr:nth-child(even) {
+                    background-color: var(--beige-light);
+                }
+
+                table tbody tr:nth-child(odd) {
+                    background-color: var(--white);
+                }
+
+                table tbody tr:hover {
+                    background-color: var(--beige);
+                    transform: scale(1.01);
+                    box-shadow: 0 2px 8px var(--shadow);
+                    z-index: 1;
+                    position: relative;
+                }
+
+            table td {
+                padding: 1rem 1.2rem;
+                border: none;
+                color: var(--grey-dark);
+            }
+
+            table tbody tr:last-child td:first-child {
+                border-bottom-left-radius: 12px;
+            }
+
+            table tbody tr:last-child td:last-child {
+                border-bottom-right-radius: 12px;
+            }
+
+        /* Form Styling */
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+            .form-group label {
+                display: block;
+                margin-bottom: 0.5rem;
+                font-weight: 600;
+                color: var(--navy-blue);
+            }
+
+            .form-group input,
+            .form-group select,
+            .form-group textarea {
+                width: 100%;
+                padding: 0.75rem;
+                border: 2px solid var(--grey-light);
+                border-radius: 8px;
+                font-size: 1rem;
+                transition: all 0.3s ease;
+                background-color: var(--white);
+            }
+
+                .form-group input:focus,
+                .form-group select:focus,
+                .form-group textarea:focus {
+                    outline: none;
+                    border-color: var(--navy-blue);
+                    box-shadow: 0 0 0 3px rgba(26, 35, 126, 0.1);
+                    transform: translateY(-1px);
+                }
+
+            .form-group textarea {
+                min-height: 100px;
+                resize: vertical;
+            }
+
+        /* Card Styling */
+        .card {
+            background: var(--white);
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px var(--shadow);
+            margin-bottom: 1.5rem;
+            transition: all 0.3s ease;
+        }
+
+            .card:hover {
+                box-shadow: 0 4px 16px var(--shadow-hover);
+                transform: translateY(-2px);
+            }
+
+        /* Footer */
+        .footer {
+            background: linear-gradient(135deg, var(--navy-blue) 0%, var(--navy-blue-dark) 100%);
+            color: var(--white);
+            text-align: center;
+            padding: 2rem;
+            margin-top: 4rem;
+            box-shadow: 0 -2px 8px var(--shadow);
+        }
+
+            .footer a {
+                color: var(--beige);
+                text-decoration: none;
+                transition: color 0.3s ease;
+            }
+
+                .footer a:hover {
+                    color: var(--white);
+                    text-decoration: underline;
+                }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .navbar {
+                flex-direction: column;
+                padding: 1rem;
+            }
+
+            .navbar-left {
+                flex-wrap: wrap;
+                gap: 0.5rem;
+            }
+
+            .container {
+                padding: 0 1rem;
+            }
+
+            .content {
+                padding: 1.5rem;
+            }
+
+            table {
+                font-size: 0.9rem;
+            }
+
+                table th,
+                table td {
+                    padding: 0.75rem 0.5rem;
+                }
+        }
+    </style>
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    {% if user.is_authenticated %}
+    <nav class="navbar">
+        <div class="navbar-left">
+            {% if user.is_student %}
+            <a href="{% url 'student_dashboard' %}" class="navbar-brand">Pathwise</a>
+            {% elif user.is_teacher %}
+            <a href="{% url 'teacher_dashboard' %}" class="navbar-brand">Pathwise</a>
+            {% elif user.is_department_head %}
+            <a href="{% url 'department_head_dashboard' %}" class="navbar-brand">Pathwise</a>
+            {% else %}
+            <span class="navbar-brand">Pathwise</span>
+            {% endif %}
+            {% if user.is_student %}
+            <a href="{% url 'student_dashboard' %}">Home</a>
+            <a href="{% url 'student_my_courses' %}">My Courses</a>
+            {% elif user.is_teacher %}
+            <a href="{% url 'teacher_dashboard' %}">Home</a>
+            <a href="{% url 'teacher_courses' %}">Courses I Teach</a>
+            <a href="{% url 'teacher_students' %}">My Students</a>
+            {% elif user.is_department_head %}
+            <a href="{% url 'department_head_dashboard' %}">Home</a>
+            <a href="{% url 'manage_teachers' %}">Teachers</a>
+            <a href="{% url 'manage_students' %}">Students</a>
+            <a href="{% url 'manage_courses' %}">Courses</a>
+            <a href="{% url 'assign_students' %}">Assign Students</a>
+            <a href="{% url 'department_head_lo_po' %}">LO Management</a>
+            <a href="{% url 'department_po_management' %}">PO Management</a>
+            <a href="{% url 'manage_announcements' %}">Announcements</a>
+            {% endif %}
+        </div>
+        <div class="navbar-right">
+            <a href="{% url 'profile' %}" class="profile-link">Profile</a>
+            <a href="{% url 'logout' %}" class="logout-btn">Logout</a>
+        </div>
+    </nav>
+    {% endif %}
+
+    <div class="container">
+        {% if messages %}
+        <div class="messages">
+            {% for message in messages %}
+            <div class="message {{ message.tags }}">
+                {{ message }}
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        <div class="content">
+            {% block content %}{% endblock %}
+        </div>
+    </div>
+
+    <footer class="footer">
+        <p>&copy; 2024 <strong>Pathwise</strong> - Student Information System. <a href="#">Privacy Policy</a></p>
+    </footer>
+
+    <!-- Chart.js for data visualization -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <script>
+        // Helper function to wait for Chart.js to be available
+        function waitForChart(callback, maxAttempts = 50) {
+            let attempts = 0;
+            const checkChart = setInterval(function() {
+                attempts++;
+                if (typeof Chart !== 'undefined') {
+                    clearInterval(checkChart);
+                    callback();
+                } else if (attempts >= maxAttempts) {
+                    clearInterval(checkChart);
+                    console.error('Chart.js failed to load after ' + maxAttempts + ' attempts');
+                }
+            }, 100);
+        }
+    </script>
+
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+
+{% block title %}Course Management - {{ course.code }} - University SIS{% endblock %}
+
+{% block content %}
+<h1>Course Management: {{ course.code }} - {{ course.name }}</h1>
+
+<div style="margin-top: 2rem;">
+    <h2>Learning Outcomes (LO)</h2>
+    <form method="post" style="margin-bottom: 1rem; max-width: 600px;">
+        {% csrf_token %}
+        <input type="hidden" name="action" value="create_lo">
+        <div class="form-group">
+            <label for="lo_code">LO Code:</label>
+            <input type="text" name="lo_code" id="lo_code" required>
+        </div>
+        <div class="form-group">
+            <label for="lo_description">Description:</label>
+            <textarea name="lo_description" id="lo_description" required></textarea>
+        </div>
+        <button type="submit" class="btn">Add LO</button>
+    </form>
+
+    {% if learning_outcomes %}
+    <table>
+        <thead>
+            <tr>
+                <th>Code</th>
+                <th>Description</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for lo in learning_outcomes %}
+            <tr>
+                <td>{{ lo.code }}</td>
+                <td>{{ lo.description|truncatewords:10 }}</td>
+                <td>
+                    <form method="post" style="display: inline;">
+                        {% csrf_token %}
+                        <input type="hidden" name="action" value="delete_lo">
+                        <input type="hidden" name="lo_id" value="{{ lo.id }}">
+                        <button type="submit" class="btn btn-danger">Delete</button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <p>No learning outcomes defined.</p>
+    {% endif %}
+</div>
+
+<a href="{% url 'manage_courses' %}" class="btn" style="margin-top: 1rem;">Back to Courses</a>
+{% endblock %}
+
+

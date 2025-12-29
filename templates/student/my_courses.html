@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+
+{% block title %}My Courses - University SIS{% endblock %}
+
+{% block content %}
+<h1>My Courses</h1>
+
+{% if courses_list %}
+<table>
+    <thead>
+        <tr>
+            <th>Course Code</th>
+            <th>Course Name</th>
+            <th>Instructor</th>
+            <th>Status</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for item in courses_list %}
+        <tr>
+            <td>{{ item.course.code }}</td>
+            <td>{{ item.course.name }}</td>
+            <td>{{ item.course.teacher.get_full_name|default:"Not assigned" }}</td>
+            <td>
+                {% if item.has_grades %}
+                <span style="color: #27ae60;">Grades Available</span>
+                {% else %}
+                <span style="color: #999;">No grades yet</span>
+                {% endif %}
+            </td>
+            <td>
+                <a href="{% url 'student_course_detail' item.course.id %}" class="btn">View Details</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<p>You are not enrolled in any courses.</p>
+{% endif %}
+{% endblock %}
+
+
